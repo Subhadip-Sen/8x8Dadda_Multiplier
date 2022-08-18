@@ -1,0 +1,109 @@
+
+
+
+*source/drain area:
+*as = ad = 2W × Lmin
+*and source/drain perimeter:
+*ps = pd = 2 × (W + 2Lmin)
+
+*zipper logic style simulation
+
+M1 x clk Vdd Vdd  cmosp
++ L=2U W=6U AD = 24P AS = 24P PD =20U PS =20U
+
+M2 x C y gnd cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+M3 y D z gnd cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+M4 y E z gnd cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+M5 z clk gnd gnd cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+
+
+M6 p clk_bar Vdd Vdd  cmosp
++ L=2U W=12U AD = 48P AS = 48P PD =32U PS =32U
+
+
+M7 q x p Vdd cmosp
++ L=2U W=12U AD = 48P AS = 48P PD =32U PS =32U
+
+
+
+M8 q clk_bar gnd gnd cmosn
++ L=2U W=4U AD = 16P AS = 16P PD = 16U PS = 16U
+
+
+
+
+M9 out clk Vdd Vdd cmosp
++ L=2U W=6U AD = 24P AS = 24P PD = 20U PS =20U
+
+
+M10 out q s gnd cmosn
++ L=2U W=5U AD = 20P AS = 20P PD = 18U PS = 18U
+
+
+
+M11 out A r gnd  cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+
+M12 r B s gnd cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+
+M13 s clk gnd gnd cmosn
++ L=2U W=9U AD = 36P AS = 36P PD = 26U PS = 26U
+
+
+
+
+
+
+
+
+
+
+
+
+
+V1 Vdd 0 dc 3.3
+Va A 0 dc 0
+Vb B 0 dc 3.3
+Vc C 0 dc 0
+Vd D 0 dc 3.3
+Ve E 0 dc 3.3
+
+
+* Load Capacitor
+C1 x gnd 100fF
+C2 q gnd 100fF
+C3 out gnd 100fF
+
+
+.include models.txt
+
+*TRANSIENT ANALYSIS with pulse inputs
+VCk  clk   0  PULSE (0 3.3 2NS 0 0 50NS 100NS)
+
+VCk1  clk_bar   0  PULSE (3.3 0 2NS 0 0 50NS 100NS)
+
+.tran 1ns 500ns 0nS
+
+.control
+run
+plot V(clk)  10+V(x) 15+V(out) 20+V(q)
+
+.endc
+.end
